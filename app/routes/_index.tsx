@@ -54,6 +54,15 @@ export default function Home() {
             </p>
             <div className="card-arrow">→</div>
           </Link>
+
+          <Link to="/financial" className="calc-card">
+            <div className="card-icon">💰</div>
+            <h3 className="card-title">Financial</h3>
+            <p className="card-description">
+              Smart budget planning with expert rules like 50/30/20. Plan your allocations instantly.
+            </p>
+            <div className="card-arrow">→</div>
+          </Link>
         </section>
 
         {/* Footer */}
@@ -66,6 +75,7 @@ export default function Home() {
               <Link to="/basic">Basic</Link>
               <Link to="/scientific">Scientific</Link>
               <Link to="/ip">IP & Subnet</Link>
+              <Link to="/financial">Financial</Link>
             </div>
             <div className="footer-copyright">
               © 2026 Calculator App

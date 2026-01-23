@@ -8,6 +8,7 @@ export default function Navigation() {
     { path: '/basic', label: 'Basic' },
     { path: '/scientific', label: 'Scientific' },
     { path: '/ip', label: 'IP Calc' },
+    { path: '/financial', label: 'Financial' },
   ];
 
   return (

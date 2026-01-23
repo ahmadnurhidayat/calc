@@ -5,4 +5,5 @@ export default [
     route("basic", "routes/basic.tsx"),
     route("scientific", "routes/scientific.tsx"),
     route("ip", "routes/ip.tsx"),
+    route("financial", "routes/financial.tsx"),
 ] satisfies RouteConfig;

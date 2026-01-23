@@ -17,22 +17,30 @@ export interface FinancialResult {
     period: 'Monthly' | 'Annual';
 }
 
-export const models: Record<FinancialModel, { name: string; description: string }> = {
+export const models: Record<FinancialModel, { name: string; description: string; info: string; sourceUrl: string }> = {
     '50/30/20': {
         name: '50/30/20 Rule',
         description: 'Needs (50%), Wants (30%), Savings (20%)',
+        info: 'Popularized by Elizabeth Warren, this rule divides income into Needs, Wants, and Savings to ensure a balanced financial life.',
+        sourceUrl: 'https://www.investopedia.com/ask/answers/022916/what-502030-budget-rule.asp',
     },
     '70/20/10': {
         name: '70/20/10 Rule',
         description: 'Living Expenses (70%), Savings (20%), Debt/Donation (10%)',
+        info: 'A simple allocation method often recommended for beginners to prioritize savings while managing debt or charitable giving.',
+        sourceUrl: 'https://www.thebalance.com/the-70-20-10-budget-rule-2385963',
     },
     '80/20': {
         name: '80/20 Rule',
         description: 'Living Expenses (80%), Savings (20%)',
+        info: 'Also known as the "Pay Yourself First" method. Start by saving 20%, then spend the rest freely on living expenses.',
+        sourceUrl: 'https://www.investopedia.com/terms/p/payyourself.asp',
     },
     'Custom': {
         name: 'Custom Allocation',
         description: 'Define your own percentages',
+        info: 'Create a personalized budget that fits your unique financial situation and goals.',
+        sourceUrl: '',
     },
 };
 

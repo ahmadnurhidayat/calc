@@ -35,14 +35,57 @@ export default function FinancialCalculator() {
         <div className="calculator-wrapper">
             <div className="calculator-container glass-card-intense" style={{ maxWidth: '600px' }}>
                 <div className="calculator">
-                    <h2 style={{
-                        fontFamily: 'var(--font-sans)',
-                        fontSize: '1.5rem',
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 'var(--spacing-lg)' }}>
+                        <h2 style={{
+                            fontFamily: 'var(--font-sans)',
+                            fontSize: '1.5rem',
+                            color: 'var(--color-primary-dark)',
+                            margin: 0
+                        }}>
+                            Financial Budget Planner
+                        </h2>
+
+                        {/* Info Card / Button */}
+                        {models[model].sourceUrl && (
+                            <a
+                                href={models[model].sourceUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                title="Learn more about this rule"
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 'var(--spacing-xs)',
+                                    padding: 'var(--spacing-xs) var(--spacing-sm)',
+                                    background: 'var(--color-bg-elevated)',
+                                    border: '1px solid var(--color-border)',
+                                    borderRadius: 'var(--radius-md)',
+                                    color: 'var(--color-primary)',
+                                    textDecoration: 'none',
+                                    fontSize: '0.8rem',
+                                    fontWeight: 500,
+                                    transition: 'all var(--transition-fast)',
+                                    boxShadow: 'var(--shadow-sm)'
+                                }}
+                            >
+                                <span>ℹ️</span>
+                                <span>Expert Source</span>
+                            </a>
+                        )}
+                    </div>
+
+                    <div style={{
+                        background: 'rgba(37, 99, 235, 0.05)',
+                        border: '1px solid var(--color-primary-light)',
+                        borderRadius: 'var(--radius-md)',
+                        padding: 'var(--spacing-md)',
                         marginBottom: 'var(--spacing-lg)',
-                        color: 'var(--color-primary-dark)'
+                        fontSize: '0.9rem',
+                        color: 'var(--color-text-secondary)',
+                        lineHeight: 1.5
                     }}>
-                        Financial Budget Planner
-                    </h2>
+                        <strong>About {models[model].name}:</strong> {models[model].info}
+                    </div>
 
                     <div className="ip-input-group">
                         <label className="ip-input-label">Currency</label>
@@ -115,7 +158,8 @@ export default function FinancialCalculator() {
                                         textAlign: 'left',
                                         display: 'flex',
                                         flexDirection: 'column',
-                                        alignItems: 'flex-start'
+                                        alignItems: 'flex-start',
+                                        borderLeft: model === m ? '4px solid var(--color-primary)' : '1px solid var(--color-border)'
                                     }}
                                 >
                                     <span style={{ fontWeight: 600 }}>{models[m].name}</span>

@@ -4,6 +4,12 @@
  */
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
+	"routes": [
+		{
+			"pattern": "calc.beyondyou.my.id",
+			"custom_domain": true
+		}
+	],
 	"name": "calc",
 	"compatibility_date": "2025-04-04",
 	"compatibility_flags": [
@@ -14,6 +20,12 @@
 		"directory": "./dist/client",
 		"binding": "ASSETS"
 	},
+	"services": [
+		{
+			"binding": "CALC",
+			"service": "calc"
+		}
+	],
 	"vars": {
 		"VALUE_FROM_CLOUDFLARE": "Hello from Cloudflare"
 	},

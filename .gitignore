@@ -5,7 +5,7 @@
 # React Router
 /.react-router/
 /build/
-
-# Docker
 /dist/
-/node_modules/
+
+# Cloudflare
+/.wrangler/

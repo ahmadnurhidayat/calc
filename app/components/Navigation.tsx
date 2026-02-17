@@ -9,6 +9,7 @@ export default function Navigation() {
     { path: '/scientific', label: 'Scientific' },
     { path: '/ip', label: 'IP Calc' },
     { path: '/financial', label: 'Financial' },
+    { path: '/salary-calc', label: 'Salary' },
   ];
 
   return (

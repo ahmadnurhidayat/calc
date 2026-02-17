@@ -63,6 +63,15 @@ export default function Home() {
             </p>
             <div className="card-arrow">→</div>
           </Link>
+
+          <Link to="/salary-calc" className="calc-card">
+            <div className="card-icon">🧾</div>
+            <h3 className="card-title">Salary Calculator</h3>
+            <p className="card-description">
+              Indonesian net salary calculator with PPh 21 tax, BPJS deductions, and regional cost-of-living score.
+            </p>
+            <div className="card-arrow">→</div>
+          </Link>
         </section>
 
         {/* Footer */}
@@ -76,6 +85,7 @@ export default function Home() {
               <Link to="/scientific">Scientific</Link>
               <Link to="/ip">IP & Subnet</Link>
               <Link to="/financial">Financial</Link>
+              <Link to="/salary-calc">Salary</Link>
             </div>
             <div className="footer-copyright">
               © 2026 Calculator App

@@ -182,20 +182,17 @@ export const handleMemoryClear = (state: CalculatorState): CalculatorState => {
 
 // Core calculation function
 export const calculate = (a: number, b: number, operation: Operation): number => {
+  let result: number;
   switch (operation) {
-    case '+':
-      return a + b;
-    case '-':
-      return a - b;
-    case '×':
-      return a * b;
-    case '÷':
-      return b !== 0 ? a / b : NaN;
-    case '%':
-      return a % b;
-    default:
-      return b;
+    case '+': result = a + b; break;
+    case '-': result = a - b; break;
+    case '×': result = a * b; break;
+    case '÷': return b !== 0 ? a / b : NaN;
+    case '%': result = a % b; break;
+    default: return b;
   }
+  // Fix floating-point precision artifacts (e.g. 0.1 + 0.2)
+  return parseFloat(result.toPrecision(12));
 };
 
 // Format display value
@@ -212,6 +209,11 @@ export const formatDisplayValue = (value: string): string => {
   // Limit to 12 significant digits
   if (Math.abs(num) > 999999999999 || (Math.abs(num) < 0.000001 && num !== 0)) {
     return num.toExponential(6);
+  }
+
+  // Guard against overflowing the display with a very long typed string
+  if (value.replace('-', '').replace('.', '').length > 12) {
+    return value.slice(0, value.startsWith('-') ? 13 : 12);
   }
 
   return value;

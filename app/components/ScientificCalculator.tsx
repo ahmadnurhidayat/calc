@@ -63,6 +63,37 @@ export default function ScientificCalculator() {
         setAngleMode((prev) => (prev === 'deg' ? 'rad' : 'deg'));
     };
 
+    // Keyboard support
+    useEffect(() => {
+        const handleKeyPress = (e: KeyboardEvent) => {
+            e.preventDefault();
+            if (e.key >= '0' && e.key <= '9') {
+                setState((prev) => handleNumber(prev, e.key));
+            } else if (e.key === '.') {
+                setState((prev) => handleNumber(prev, '.'));
+            } else if (e.key === '+') {
+                setState((prev) => handleOperation(prev, '+'));
+            } else if (e.key === '-') {
+                setState((prev) => handleOperation(prev, '-'));
+            } else if (e.key === '*') {
+                setState((prev) => handleOperation(prev, '×'));
+            } else if (e.key === '/') {
+                setState((prev) => handleOperation(prev, '÷'));
+            } else if (e.key === 'Enter' || e.key === '=') {
+                setState(handleEquals);
+            } else if (e.key === 'Escape' || e.key === 'c' || e.key === 'C') {
+                setState(handleClear());
+            } else if (e.key === 'Backspace') {
+                setState((prev) => {
+                    const newValue = prev.currentValue.slice(0, -1);
+                    return { ...prev, currentValue: newValue || '0' };
+                });
+            }
+        };
+        window.addEventListener('keydown', handleKeyPress);
+        return () => window.removeEventListener('keydown', handleKeyPress);
+    }, []);
+
     const getHistory = () => {
         if (state.previousValue && state.operation) {
             return `${state.previousValue} ${state.operation}`;

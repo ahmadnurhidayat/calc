@@ -1,8 +1,10 @@
 // Navigation Component
 import { Link, useLocation } from 'react-router';
+import { useState } from 'react';
 
 export default function Navigation() {
   const location = useLocation();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const navItems = [
     { path: '/basic', label: 'Basic' },
@@ -15,7 +17,7 @@ export default function Navigation() {
   return (
     <nav className="navigation">
       <div className="nav-container">
-        <Link to="/" className="nav-brand">
+        <Link to="/" className="nav-brand" onClick={() => setMenuOpen(false)}>
           <span className="brand-text">calc</span>
         </Link>
 
@@ -41,8 +43,33 @@ export default function Navigation() {
                 strokeWidth="2" />
             </svg>
           </Link>
+          <button
+            className="hamburger"
+            aria-label="Toggle menu"
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen((prev) => !prev)}
+          >
+            <span className={`hamburger-line ${menuOpen ? 'open' : ''}`} />
+            <span className={`hamburger-line ${menuOpen ? 'open' : ''}`} />
+            <span className={`hamburger-line ${menuOpen ? 'open' : ''}`} />
+          </button>
         </div>
       </div>
+
+      {menuOpen && (
+        <div className="mobile-menu">
+          {navItems.map((item) => (
+            <Link
+              key={item.path}
+              to={item.path}
+              className={`mobile-nav-link ${location.pathname === item.path ? 'active' : ''}`}
+              onClick={() => setMenuOpen(false)}
+            >
+              {item.label}
+            </Link>
+          ))}
+        </div>
+      )}
 
       <style>{`
         .navigation {
@@ -126,6 +153,51 @@ export default function Navigation() {
           overflow: visible;
         }
         
+        .hamburger {
+          display: none;
+          flex-direction: column;
+          justify-content: center;
+          gap: 5px;
+          background: none;
+          border: none;
+          cursor: pointer;
+          padding: 4px;
+          margin-left: var(--spacing-md);
+        }
+
+        .hamburger-line {
+          display: block;
+          width: 22px;
+          height: 2px;
+          background: var(--color-text-primary);
+          border-radius: 2px;
+          transition: transform 0.2s, opacity 0.2s;
+        }
+
+        .mobile-menu {
+          display: flex;
+          flex-direction: column;
+          padding: var(--spacing-md) var(--spacing-lg);
+          border-top: 1px solid var(--color-border);
+          gap: var(--spacing-sm);
+        }
+
+        .mobile-nav-link {
+          font-family: var(--font-sans);
+          font-size: 1rem;
+          font-weight: 500;
+          color: var(--color-text-secondary);
+          text-decoration: none;
+          padding: var(--spacing-sm) 0;
+          transition: color var(--transition-fast);
+        }
+
+        .mobile-nav-link:hover,
+        .mobile-nav-link.active {
+          color: var(--color-text-primary);
+          font-weight: 600;
+        }
+
         @media (max-width: 768px) {
           .nav-center {
             display: none;
@@ -133,6 +205,10 @@ export default function Navigation() {
 
           .nav-cta {
             display: none;
+          }
+
+          .hamburger {
+            display: flex;
           }
         }
       `}</style>

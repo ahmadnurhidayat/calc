@@ -1,5 +1,5 @@
 // Salary Calculator Component
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import {
     calculateSalary,
     formatRupiah,
@@ -44,28 +44,41 @@ export default function SalaryCalculator() {
         setGrossSalary(formatted);
     };
 
-    // Score bar visual
+    const handleReset = () => {
+        setGrossSalary('');
+        setStatus('TK/0');
+        setProvinceIdx(0);
+        setCityIdx(0);
+        setResult(null);
+    };
+
+    // Reset listener from global dual-nav
+    useEffect(() => {
+        const handleResetEvent = () => {
+            handleReset();
+        };
+        window.addEventListener('calc-reset', handleResetEvent);
+        return () => window.removeEventListener('calc-reset', handleResetEvent);
+    }, []);
+
+    // Jakarta cost scoring bar via clean capsule items
     const scoreBar = (score: number) => {
         return (
-            <div style={{
-                display: 'flex',
-                gap: '4px',
-                marginTop: 'var(--spacing-sm)',
-            }}>
-                {[1, 2, 3, 4, 5].map((s) => (
-                    <div
-                        key={s}
-                        style={{
-                            flex: 1,
-                            height: '8px',
-                            borderRadius: '4px',
-                            background: s <= score
-                                ? (score >= 4 ? '#10B981' : score >= 3 ? '#F59E0B' : '#EF4444')
-                                : 'var(--color-bg-elevated)',
-                            transition: 'all 0.3s ease',
-                        }}
-                    />
-                ))}
+            <div className="hl-capsule-bar">
+                {[1, 2, 3, 4, 5].map((s) => {
+                    let activeClass = '';
+                    if (s <= score) {
+                        if (score >= 4) activeClass = 'active-high';
+                        else if (score >= 3) activeClass = 'active-mid';
+                        else activeClass = 'active-low';
+                    }
+                    return (
+                        <div
+                            key={s}
+                            className={`hl-capsule-indicator ${activeClass}`}
+                        />
+                    );
+                })}
             </div>
         );
     };
@@ -78,19 +91,20 @@ export default function SalaryCalculator() {
                     <div style={{
                         display: 'flex',
                         justifyContent: 'space-between',
-                        alignItems: 'flex-start',
+                        alignItems: 'center',
                         marginBottom: 'var(--spacing-lg)',
                     }}>
                         <h2 style={{
-                            fontFamily: 'var(--font-sans)',
+                            fontFamily: 'var(--font-display)',
                             fontSize: '1.5rem',
-                            color: 'var(--color-primary-dark)',
+                            fontWeight: 600,
+                            letterSpacing: '-0.28px',
                             margin: 0,
                         }}>
                             Salary Calculator
                         </h2>
                         <span style={{
-                            padding: 'var(--spacing-xs) var(--spacing-sm)',
+                            padding: '4px 10px',
                             background: 'var(--color-bg-elevated)',
                             border: '1px solid var(--color-border)',
                             borderRadius: 'var(--radius-md)',
@@ -98,39 +112,31 @@ export default function SalaryCalculator() {
                             fontWeight: 600,
                             color: 'var(--color-text-secondary)',
                         }}>
-                            🇮🇩 PPh 21
+                            🇮🇩 PPh 21 & BPJS
                         </span>
                     </div>
 
-                    {/* Info */}
+                    {/* Editorial intro box */}
                     <div style={{
-                        background: 'rgba(37, 99, 235, 0.05)',
-                        border: '1px solid var(--color-primary-light)',
+                        background: 'rgba(0, 102, 204, 0.05)',
+                        border: '1px solid rgba(0, 102, 204, 0.1)',
                         borderRadius: 'var(--radius-md)',
                         padding: 'var(--spacing-md)',
                         marginBottom: 'var(--spacing-lg)',
-                        fontSize: '0.85rem',
+                        fontSize: '0.875rem',
                         color: 'var(--color-text-secondary)',
-                        lineHeight: 1.6,
+                        lineHeight: 1.5,
                     }}>
                         Hitung gaji bersih setelah dipotong PPh 21 & BPJS, lalu bandingkan dengan Kebutuhan Hidup Layak (KHL) di daerahmu.
                     </div>
 
-                    {/* Province */}
+                    {/* Province Selector */}
                     <div className="ip-input-group">
                         <label className="ip-input-label">Provinsi</label>
                         <select
-                            className="ip-input"
+                            className="premium-select-pill"
                             value={provinceIdx}
                             onChange={(e) => handleProvinceChange(Number(e.target.value))}
-                            style={{
-                                cursor: 'pointer',
-                                appearance: 'none',
-                                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`,
-                                backgroundRepeat: 'no-repeat',
-                                backgroundPosition: 'right 12px center',
-                                paddingRight: '36px',
-                            }}
                         >
                             {PROVINCES.map((p, i) => (
                                 <option key={p.name} value={i}>{p.name}</option>
@@ -138,21 +144,13 @@ export default function SalaryCalculator() {
                         </select>
                     </div>
 
-                    {/* City */}
+                    {/* City Selector */}
                     <div className="ip-input-group">
                         <label className="ip-input-label">Kabupaten / Kota</label>
                         <select
-                            className="ip-input"
+                            className="premium-select-pill"
                             value={cityIdx}
                             onChange={(e) => setCityIdx(Number(e.target.value))}
-                            style={{
-                                cursor: 'pointer',
-                                appearance: 'none',
-                                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`,
-                                backgroundRepeat: 'no-repeat',
-                                backgroundPosition: 'right 12px center',
-                                paddingRight: '36px',
-                            }}
                         >
                             {cities.map((c, i) => (
                                 <option key={c.name} value={i}>
@@ -162,21 +160,13 @@ export default function SalaryCalculator() {
                         </select>
                     </div>
 
-                    {/* Status (PTKP) */}
+                    {/* Status Select */}
                     <div className="ip-input-group">
                         <label className="ip-input-label">Status PTKP</label>
                         <select
-                            className="ip-input"
+                            className="premium-select-pill"
                             value={status}
                             onChange={(e) => setStatus(e.target.value as PTKPStatus)}
-                            style={{
-                                cursor: 'pointer',
-                                appearance: 'none',
-                                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`,
-                                backgroundRepeat: 'no-repeat',
-                                backgroundPosition: 'right 12px center',
-                                paddingRight: '36px',
-                            }}
                         >
                             {PTKP_STATUSES.map((s) => (
                                 <option key={s} value={s}>
@@ -186,26 +176,14 @@ export default function SalaryCalculator() {
                         </select>
                     </div>
 
-                    {/* Gross Salary */}
+                    {/* Gross Salary Input */}
                     <div className="ip-input-group">
                         <label className="ip-input-label">Gaji Bulanan (Gross)</label>
-                        <div className="ip-input-container">
-                            <span style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                padding: '0 var(--spacing-md)',
-                                background: 'var(--color-bg-elevated)',
-                                border: '1px solid var(--color-border)',
-                                borderRight: 'none',
-                                borderRadius: 'var(--radius-md) 0 0 var(--radius-md)',
-                                color: 'var(--color-text-secondary)',
-                                fontFamily: 'var(--font-mono)',
-                                fontWeight: 600,
-                            }}>Rp</span>
+                        <div className="premium-pill-input-container">
+                            <span className="premium-pill-input-prefix">Rp</span>
                             <input
                                 type="text"
-                                className="ip-input"
-                                style={{ borderRadius: '0 var(--radius-md) var(--radius-md) 0' }}
+                                className="premium-pill-input"
                                 value={grossSalary}
                                 onChange={handleSalaryInput}
                                 placeholder="10.000.000"
@@ -214,56 +192,72 @@ export default function SalaryCalculator() {
                         </div>
                     </div>
 
-                    {/* Calculate */}
-                    <div className="button-grid ip">
+                    {/* CTAs */}
+                    <div className="button-grid ip" style={{ gridTemplateColumns: '1fr 1fr', gap: '12px', marginTop: 'var(--spacing-lg)' }}>
                         <button
-                            className="calc-button equals"
+                            className="sub-nav-cta"
                             onClick={handleCalculate}
-                            style={{ fontSize: '1.125rem', fontWeight: '600' }}
+                            style={{ padding: '12px 24px', fontSize: '1rem' }}
                         >
                             Hitung Gaji Bersih
                         </button>
+                        <button
+                            className="calc-button function"
+                            onClick={handleReset}
+                            style={{
+                                minHeight: 'auto',
+                                height: '44px',
+                                borderRadius: 'var(--radius-pill)',
+                                border: '1px solid var(--color-border)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center'
+                            }}
+                        >
+                            Reset
+                        </button>
                     </div>
 
-                    {/* Results */}
+                    {/* Calculation Output */}
                     {result && (
-                        <div className="ip-results" style={{ marginTop: 'var(--spacing-xl)', animation: 'slideIn 0.5s ease-out' }}>
-                            {/* Net Salary Hero */}
+                        <div className="store-utility-card" style={{ marginTop: 'var(--spacing-xl)', animation: 'slideIn 0.5s ease-out' }}>
+                            {/* Net Salary Hero banner */}
                             <div style={{
                                 textAlign: 'center',
-                                padding: 'var(--spacing-xl)',
-                                background: 'linear-gradient(135deg, rgba(37, 99, 235, 0.06), rgba(16, 185, 129, 0.06))',
+                                padding: 'var(--spacing-xl) var(--spacing-lg)',
+                                background: 'var(--color-bg-main)',
+                                border: '1px solid var(--color-border)',
                                 borderRadius: 'var(--radius-lg)',
                                 marginBottom: 'var(--spacing-lg)',
-                                border: '1px solid var(--color-border)',
                             }}>
-                                <div style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-xs)' }}>
+                                <div style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)', marginBottom: '6px', fontWeight: 500 }}>
                                     Gaji Bersih / Bulan
                                 </div>
                                 <div style={{
-                                    fontSize: '2.25rem',
-                                    fontWeight: 700,
+                                    fontSize: '2.5rem',
+                                    fontWeight: 600,
                                     fontFamily: 'var(--font-mono)',
-                                    color: 'var(--color-primary-dark)',
-                                    letterSpacing: '-0.02em',
+                                    color: 'var(--color-primary)',
+                                    letterSpacing: '-1px',
                                 }}>
                                     {formatRupiah(result.netSalary)}
                                 </div>
                                 <div style={{
                                     fontSize: '0.8rem',
-                                    color: 'var(--color-text-muted)',
-                                    marginTop: 'var(--spacing-xs)',
+                                    color: 'var(--color-text-secondary)',
+                                    marginTop: '6px',
                                 }}>
                                     dari {formatRupiah(result.grossSalary)} bruto
                                 </div>
                             </div>
 
-                            {/* Deduction Breakdown */}
+                            {/* Deductions Breakdown */}
                             <h3 style={{
                                 marginBottom: 'var(--spacing-md)',
-                                color: 'var(--color-primary-dark)',
+                                color: 'var(--color-text-primary)',
                                 fontSize: '1.1rem',
-                                fontFamily: 'var(--font-sans)',
+                                fontFamily: 'var(--font-display)',
+                                fontWeight: 600,
                                 borderBottom: '2px solid var(--color-border)',
                                 paddingBottom: 'var(--spacing-sm)',
                             }}>
@@ -277,15 +271,13 @@ export default function SalaryCalculator() {
                                     { label: 'BPJS JHT (2%)', value: result.deductions.bpjsJHT, color: 'var(--color-primary-light)', icon: '🏦' },
                                     { label: 'BPJS JP (1%)', value: result.deductions.bpjsJP, color: 'var(--color-primary)', icon: '👴' },
                                 ].map((item) => (
-                                    <div key={item.label} style={{
-                                        display: 'flex',
-                                        justifyContent: 'space-between',
-                                        alignItems: 'center',
-                                        padding: 'var(--spacing-md)',
-                                        background: 'var(--color-bg-main)',
-                                        borderRadius: 'var(--radius-md)',
-                                        borderLeft: `4px solid ${item.color}`,
-                                    }}>
+                                    <div
+                                        key={item.label}
+                                        className="premium-row-item"
+                                        style={{
+                                            ['--accent-color' as any]: item.color,
+                                        }}
+                                    >
                                         <span style={{
                                             fontSize: '0.9rem',
                                             color: 'var(--color-text-primary)',
@@ -307,14 +299,14 @@ export default function SalaryCalculator() {
                                 ))}
                             </div>
 
-                            {/* Total Deductions */}
+                            {/* Total Deductions row */}
                             <div style={{
                                 display: 'flex',
                                 justifyContent: 'space-between',
                                 alignItems: 'center',
                                 marginTop: 'var(--spacing-md)',
                                 padding: 'var(--spacing-md)',
-                                background: 'rgba(239, 68, 68, 0.05)',
+                                background: 'rgba(239, 68, 68, 0.04)',
                                 borderRadius: 'var(--radius-md)',
                                 border: '1px dashed var(--color-border)',
                             }}>
@@ -329,7 +321,7 @@ export default function SalaryCalculator() {
                                 </span>
                             </div>
 
-                            {/* KHL Score */}
+                            {/* KHL Kelayakan Score capsule layout */}
                             <div style={{
                                 marginTop: 'var(--spacing-xl)',
                                 padding: 'var(--spacing-lg)',
@@ -345,21 +337,21 @@ export default function SalaryCalculator() {
                                 }}>
                                     <h3 style={{
                                         margin: 0,
-                                        color: 'var(--color-primary-dark)',
+                                        color: 'var(--color-text-primary)',
                                         fontSize: '1rem',
-                                        fontFamily: 'var(--font-sans)',
+                                        fontFamily: 'var(--font-display)',
+                                        fontWeight: 600,
                                     }}>
                                         Skor Kelayakan Hidup
                                     </h3>
                                     <span style={{
-                                        padding: 'var(--spacing-xs) var(--spacing-md)',
+                                        padding: '4px 12px',
                                         background: result.khlScore.color,
-                                        color: '#fff',
+                                        color: '#ffffff',
                                         borderRadius: '20px',
-                                        fontSize: '0.85rem',
+                                        fontSize: '0.8rem',
                                         fontWeight: 700,
                                         letterSpacing: '0.02em',
-                                        boxShadow: `0 2px 8px ${result.khlScore.color}40`,
                                     }}>
                                         {result.khlScore.label}
                                     </span>
@@ -375,34 +367,34 @@ export default function SalaryCalculator() {
                                 }}>
                                     <div style={{
                                         padding: 'var(--spacing-md)',
-                                        background: 'var(--color-bg-card)',
+                                        background: 'var(--color-bg-surface)',
                                         borderRadius: 'var(--radius-md)',
                                         border: '1px solid var(--color-border)',
                                     }}>
-                                        <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', marginBottom: '4px' }}>
+                                        <div style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)', marginBottom: '4px' }}>
                                             KHL {result.location.split(',')[0]}
                                         </div>
-                                        <div style={{ fontFamily: 'var(--font-mono)', fontWeight: 600, fontSize: '1rem' }}>
-                                            {formatRupiah(result.khlScore.khl)}<span style={{ fontSize: '0.7rem', color: 'var(--color-text-muted)' }}>/bln</span>
+                                        <div style={{ fontFamily: 'var(--font-mono)', fontWeight: 600, fontSize: '0.95rem' }}>
+                                            {formatRupiah(result.khlScore.khl)}<span style={{ fontSize: '0.7rem', color: 'var(--color-text-secondary)', fontWeight: 400 }}>/bln</span>
                                         </div>
                                     </div>
                                     <div style={{
                                         padding: 'var(--spacing-md)',
-                                        background: 'var(--color-bg-card)',
+                                        background: 'var(--color-bg-surface)',
                                         borderRadius: 'var(--radius-md)',
                                         border: '1px solid var(--color-border)',
                                     }}>
-                                        <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', marginBottom: '4px' }}>
+                                        <div style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)', marginBottom: '4px' }}>
                                             Rasio Gaji/KHL
                                         </div>
-                                        <div style={{ fontFamily: 'var(--font-mono)', fontWeight: 600, fontSize: '1rem', color: result.khlScore.color }}>
+                                        <div style={{ fontFamily: 'var(--font-mono)', fontWeight: 600, fontSize: '0.95rem', color: result.khlScore.color }}>
                                             {result.khlScore.ratio.toFixed(2)}x
                                         </div>
                                     </div>
                                 </div>
 
-                                <div style={{ fontSize: '0.7rem', color: 'var(--color-text-muted)', marginTop: 'var(--spacing-sm)', lineHeight: 1.4 }}>
-                                    📊 Lokasi: {result.location} • Status: {result.status}
+                                <div style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)', marginTop: 'var(--spacing-md)', lineHeight: 1.4, textAlign: 'center' }}>
+                                    📍 Lokasi: {result.location} • Status PTKP: {result.status}
                                 </div>
                             </div>
 
@@ -410,16 +402,16 @@ export default function SalaryCalculator() {
                             <div style={{
                                 marginTop: 'var(--spacing-lg)',
                                 padding: 'var(--spacing-md)',
-                                background: 'rgba(245, 158, 11, 0.05)',
-                                border: '1px solid rgba(245, 158, 11, 0.2)',
+                                background: 'var(--color-bg-main)',
+                                border: '1px solid var(--color-border)',
                                 borderRadius: 'var(--radius-md)',
-                                fontSize: '0.7rem',
-                                color: 'var(--color-text-muted)',
+                                fontSize: '0.75rem',
+                                color: 'var(--color-text-secondary)',
                                 lineHeight: 1.5,
                             }}>
                                 ⚠️ <strong>Disclaimer:</strong> Kalkulator ini hanyalah estimasi berdasarkan UU HPP No. 7/2021
-                                dan data KHL dari BPS Susenas 2021 dengan penyesuaian inflasi. Hasil tidak dapat dijadikan
-                                acuan pembayaran resmi. Konsultasikan dengan ahli pajak untuk perhitungan yang akurat.
+                                dan data KHL Susenas BPS dengan penyesuaian inflasi. Hasil tidak dapat dijadikan
+                                acuan pembayaran resmi. Konsultasikan dengan ahli pajak untuk perhitungan resmi.
                             </div>
                         </div>
                     )}

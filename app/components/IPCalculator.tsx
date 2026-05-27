@@ -1,5 +1,5 @@
 // IP Calculator Component
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { calculateIPInfo, type IPCalculation } from '~/utils/ipCalc';
 import '~/styles/calculator.css';
 
@@ -29,16 +29,25 @@ export default function IPCalculator() {
         setError('');
     };
 
+    // Reset listener from global dual-nav
+    useEffect(() => {
+        const handleResetEvent = () => {
+            handleReset();
+        };
+        window.addEventListener('calc-reset', handleResetEvent);
+        return () => window.removeEventListener('calc-reset', handleResetEvent);
+    }, []);
+
     return (
         <div className="calculator-wrapper">
             <div className="calculator-container glass-card-intense" style={{ maxWidth: '600px' }}>
                 <div className="calculator">
                     <div className="ip-input-group">
                         <label className="ip-input-label">IP Address / CIDR</label>
-                        <div className="ip-input-container">
+                        <div className="premium-pill-input-container">
                             <input
                                 type="text"
-                                className="ip-input"
+                                className="premium-pill-input"
                                 value={ipAddress}
                                 onChange={(e) => setIPAddress(e.target.value)}
                                 placeholder="192.168.1.0"
@@ -46,32 +55,44 @@ export default function IPCalculator() {
                             <span style={{
                                 color: 'var(--color-text-secondary)',
                                 fontSize: '1.5rem',
-                                fontFamily: 'var(--font-mono)'
+                                fontFamily: 'var(--font-mono)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                padding: '0 8px'
                             }}>/</span>
                             <input
                                 type="number"
-                                className="ip-input"
+                                className="premium-pill-input"
                                 value={cidr}
                                 onChange={(e) => setCidr(e.target.value)}
                                 placeholder="24"
                                 min="0"
                                 max="32"
-                                style={{ maxWidth: '100px' }}
+                                style={{ maxWidth: '80px', textAlign: 'center' }}
                             />
                         </div>
                     </div>
 
-                    <div className="button-grid ip">
+                    <div className="button-grid ip" style={{ gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                         <button
-                            className="calc-button operator"
+                            className="sub-nav-cta"
                             onClick={handleCalculate}
-                            style={{ fontSize: '1.125rem', fontWeight: '600' }}
+                            style={{ padding: '12px 24px', fontSize: '1rem' }}
                         >
                             Calculate
                         </button>
                         <button
                             className="calc-button function"
                             onClick={handleReset}
+                            style={{
+                                minHeight: 'auto',
+                                height: '44px',
+                                borderRadius: 'var(--radius-pill)',
+                                border: '1px solid var(--color-border)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center'
+                            }}
                         >
                             Reset
                         </button>
@@ -81,7 +102,7 @@ export default function IPCalculator() {
                         <div style={{
                             marginTop: 'var(--spacing-lg)',
                             padding: 'var(--spacing-md)',
-                            background: 'rgba(239, 68, 68, 0.2)',
+                            background: 'rgba(239, 68, 68, 0.1)',
                             border: '1px solid var(--color-error)',
                             borderRadius: 'var(--radius-md)',
                             color: 'var(--color-error)',
@@ -93,12 +114,13 @@ export default function IPCalculator() {
                     )}
 
                     {result && (
-                        <div className="ip-results">
+                        <div className="store-utility-card" style={{ marginTop: 'var(--spacing-xl)', animation: 'slideIn 0.5s ease-out' }}>
                             <h3 style={{
-                                marginBottom: 'var(--spacing-md)',
-                                color: 'var(--color-primary-light)',
+                                marginBottom: 'var(--spacing-lg)',
+                                color: 'var(--color-primary)',
                                 fontSize: '1.125rem',
-                                fontFamily: 'var(--font-mono)',
+                                fontFamily: 'var(--font-display)',
+                                fontWeight: 600,
                             }}>
                                 Subnet Information
                             </h3>
@@ -158,7 +180,7 @@ export default function IPCalculator() {
                                 <span className="ip-result-value">{result.ipType}</span>
                             </div>
 
-                            <div className="ip-result-row">
+                            <div className="ip-result-row" style={{ borderBottom: 'none' }}>
                                 <span className="ip-result-label">Binary:</span>
                                 <span className="ip-result-value" style={{ fontSize: '0.75rem' }}>{result.binary}</span>
                             </div>

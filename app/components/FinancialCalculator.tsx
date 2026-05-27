@@ -1,5 +1,5 @@
 // Financial Calculator Component
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
     calculateBudget,
     models,
@@ -31,71 +31,84 @@ export default function FinancialCalculator() {
         setSalary(e.target.value);
     };
 
+    const handleReset = () => {
+        setSalary('');
+        setModel('50/30/20');
+        setPeriod('Monthly');
+        setCurrency('USD');
+        setResult(null);
+    };
+
+    // Reset listener from global dual-nav
+    useEffect(() => {
+        const handleResetEvent = () => {
+            handleReset();
+        };
+        window.addEventListener('calc-reset', handleResetEvent);
+        return () => window.removeEventListener('calc-reset', handleResetEvent);
+    }, []);
+
     return (
         <div className="calculator-wrapper">
-            <div className="calculator-container glass-card-intense" style={{ maxWidth: '600px' }}>
+            <div className="calculator-container glass-card-intense" style={{ maxWidth: '660px' }}>
                 <div className="calculator">
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 'var(--spacing-lg)' }}>
+                    {/* Header */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-lg)' }}>
                         <h2 style={{
-                            fontFamily: 'var(--font-sans)',
+                            fontFamily: 'var(--font-display)',
                             fontSize: '1.5rem',
-                            color: 'var(--color-primary-dark)',
+                            fontWeight: 600,
+                            letterSpacing: '-0.28px',
                             margin: 0
                         }}>
-                            Financial Budget Planner
+                            Budget Planner
                         </h2>
 
-                        {/* Info Card / Button */}
                         {models[model].sourceUrl && (
                             <a
                                 href={models[model].sourceUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 title="Learn more about this rule"
+                                className="sub-nav-cta"
                                 style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: 'var(--spacing-xs)',
-                                    padding: 'var(--spacing-xs) var(--spacing-sm)',
-                                    background: 'var(--color-bg-elevated)',
-                                    border: '1px solid var(--color-border)',
-                                    borderRadius: 'var(--radius-md)',
-                                    color: 'var(--color-primary)',
                                     textDecoration: 'none',
-                                    fontSize: '0.8rem',
-                                    fontWeight: 500,
-                                    transition: 'all var(--transition-fast)',
-                                    boxShadow: 'var(--shadow-sm)'
+                                    fontSize: '11px',
+                                    padding: '4px 10px',
+                                    background: 'var(--color-bg-elevated)',
+                                    color: 'var(--color-primary)',
+                                    border: '1px solid var(--color-border)'
                                 }}
                             >
-                                <span>ℹ️</span>
-                                <span>Expert Source</span>
+                                Learn More ↗
                             </a>
                         )}
                     </div>
 
+                    {/* Editorial intro box */}
                     <div style={{
-                        background: 'rgba(37, 99, 235, 0.05)',
-                        border: '1px solid var(--color-primary-light)',
+                        background: 'rgba(0, 102, 204, 0.05)',
+                        border: '1px solid rgba(0, 102, 204, 0.1)',
                         borderRadius: 'var(--radius-md)',
                         padding: 'var(--spacing-md)',
                         marginBottom: 'var(--spacing-lg)',
-                        fontSize: '0.9rem',
+                        fontSize: '0.875rem',
                         color: 'var(--color-text-secondary)',
                         lineHeight: 1.5
                     }}>
-                        <strong>About {models[model].name}:</strong> {models[model].info}
+                        <strong>{models[model].name}:</strong> {models[model].info}
                     </div>
 
+                    {/* Currency Option Chips */}
                     <div className="ip-input-group">
                         <label className="ip-input-label">Currency</label>
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--spacing-sm)' }}>
+                        <div className="configurator-grid-chips">
                             {(Object.keys(currencies) as Currency[]).map((c) => (
                                 <button
                                     key={c}
+                                    type="button"
                                     onClick={() => setCurrency(c)}
-                                    className={`calc-button ${currency === c ? 'operator' : ''}`}
-                                    style={{ minHeight: '40px', fontSize: '0.9rem', padding: 'var(--spacing-sm)' }}
+                                    className={`configurator-option-chip ${currency === c ? 'selected' : ''}`}
                                 >
                                     {c} ({currencies[c].symbol})
                                 </button>
@@ -103,40 +116,33 @@ export default function FinancialCalculator() {
                         </div>
                     </div>
 
+                    {/* Salary Input */}
                     <div className="ip-input-group">
                         <label className="ip-input-label">Total {period} Salary</label>
-                        <div className="ip-input-container">
-                            <span style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                padding: '0 var(--spacing-md)',
-                                background: 'var(--color-bg-elevated)',
-                                border: '1px solid var(--color-border)',
-                                borderRight: 'none',
-                                borderRadius: 'var(--radius-md) 0 0 var(--radius-md)',
-                                color: 'var(--color-text-secondary)',
-                                fontFamily: 'var(--font-mono)'
-                            }}>{currencies[currency].symbol}</span>
+                        <div className="premium-pill-input-container">
+                            <span className="premium-pill-input-prefix">
+                                {currencies[currency].symbol}
+                            </span>
                             <input
                                 type="number"
-                                className="ip-input"
-                                style={{ borderRadius: '0 var(--radius-md) var(--radius-md) 0' }}
+                                className="premium-pill-input"
                                 value={salary}
                                 onChange={handleSalaryChange}
-                                placeholder="5000"
+                                placeholder="5,000"
                             />
                         </div>
                     </div>
 
+                    {/* Period Option Chips */}
                     <div className="ip-input-group">
                         <label className="ip-input-label">Period</label>
-                        <div style={{ display: 'flex', gap: 'var(--spacing-sm)' }}>
+                        <div className="configurator-grid-chips" style={{ gridTemplateColumns: '1fr 1fr' }}>
                             {(['Monthly', 'Annual'] as const).map((p) => (
                                 <button
                                     key={p}
+                                    type="button"
                                     onClick={() => setPeriod(p)}
-                                    className={`calc-button ${period === p ? 'operator' : ''}`}
-                                    style={{ flex: 1, minHeight: '40px', fontSize: '0.9rem' }}
+                                    className={`configurator-option-chip ${period === p ? 'selected' : ''}`}
                                 >
                                     {p}
                                 </button>
@@ -144,76 +150,91 @@ export default function FinancialCalculator() {
                         </div>
                     </div>
 
+                    {/* Budget Model Option Cards (MacBuy Spec style) */}
                     <div className="ip-input-group">
-                        <label className="ip-input-label">Budget Model</label>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-sm)' }}>
+                        <label className="ip-input-label">Select Budget Allocation Model</label>
+                        <div className="configurator-grid-cards">
                             {(Object.keys(models) as FinancialModel[]).filter(m => m !== 'Custom').map((m) => (
                                 <button
                                     key={m}
+                                    type="button"
                                     onClick={() => setModel(m)}
-                                    className={`calc-button ${model === m ? 'operator' : ''}`}
-                                    style={{
-                                        minHeight: 'auto',
-                                        padding: 'var(--spacing-md)',
-                                        textAlign: 'left',
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        alignItems: 'flex-start',
-                                        borderLeft: model === m ? '4px solid var(--color-primary)' : '1px solid var(--color-border)'
-                                    }}
+                                    className={`configurator-option-card ${model === m ? 'selected' : ''}`}
                                 >
-                                    <span style={{ fontWeight: 600 }}>{models[m].name}</span>
-                                    <span style={{
-                                        fontSize: '0.8rem',
-                                        color: model === m ? 'var(--color-primary-dark)' : 'var(--color-text-secondary)',
-                                        opacity: 0.8,
-                                        fontWeight: 400,
-                                        marginTop: '4px'
-                                    }}>{models[m].description}</span>
+                                    <span className="configurator-option-card-title">{models[m].name}</span>
+                                    <span className="configurator-option-card-desc">{models[m].description}</span>
                                 </button>
                             ))}
                         </div>
                     </div>
 
-                    <div className="button-grid ip">
+                    {/* Calculate & Reset CTAs */}
+                    <div className="button-grid ip" style={{ gridTemplateColumns: '1fr 1fr', gap: '12px', marginTop: 'var(--spacing-lg)' }}>
                         <button
-                            className="calc-button equals"
+                            className="sub-nav-cta"
                             onClick={handleCalculate}
-                            style={{ fontSize: '1.125rem', fontWeight: '600' }}
+                            style={{ padding: '12px 24px', fontSize: '1rem' }}
                         >
                             Calculate Budget
                         </button>
+                        <button
+                            className="calc-button function"
+                            onClick={handleReset}
+                            style={{
+                                minHeight: 'auto',
+                                height: '44px',
+                                borderRadius: 'var(--radius-pill)',
+                                border: '1px solid var(--color-border)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center'
+                            }}
+                        >
+                            Reset Fields
+                        </button>
                     </div>
 
+                    {/* Results displayed in clean cards */}
                     {result && (
-                        <div className="ip-results" style={{ marginTop: 'var(--spacing-xl)', animation: 'slideIn 0.5s ease-out' }}>
+                        <div className="store-utility-card" style={{ marginTop: 'var(--spacing-xl)', animation: 'slideIn 0.5s ease-out' }}>
                             <h3 style={{
                                 marginBottom: 'var(--spacing-lg)',
-                                color: 'var(--color-primary-dark)',
+                                color: 'var(--color-primary)',
                                 fontSize: '1.25rem',
-                                fontFamily: 'var(--font-sans)',
+                                fontFamily: 'var(--font-display)',
+                                fontWeight: 600,
                                 borderBottom: '2px solid var(--color-border)',
                                 paddingBottom: 'var(--spacing-sm)'
                             }}>
                                 Allocation Breakdown
                             </h3>
 
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-md)' }}>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--spacing-md)' }}>
                                 {result.allocations.map((alloc) => (
-                                    <div key={alloc.category} style={{
-                                        padding: 'var(--spacing-md)',
-                                        background: 'var(--color-bg-main)',
-                                        borderRadius: 'var(--radius-md)',
-                                        borderLeft: `4px solid ${alloc.color}`
-                                    }}>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--spacing-xs)' }}>
-                                            <span style={{ fontWeight: 600, color: 'var(--color-text-primary)' }}>{alloc.category}</span>
-                                            <span style={{ fontWeight: 700, color: alloc.color }}>{alloc.percentage}%</span>
+                                    <div
+                                        key={alloc.category}
+                                        className="premium-row-item"
+                                        style={{
+                                            ['--accent-color' as any]: alloc.color,
+                                            flexDirection: 'column',
+                                            alignItems: 'stretch',
+                                            gap: '6px'
+                                        }}
+                                    >
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 600 }}>
+                                            <span style={{ color: 'var(--color-text-primary)' }}>{alloc.category}</span>
+                                            <span style={{ color: alloc.color }}>{alloc.percentage}%</span>
                                         </div>
-                                        <div style={{ fontSize: '1.5rem', fontFamily: 'var(--font-mono)', color: 'var(--color-text-primary)', marginBottom: 'var(--spacing-xs)' }}>
+                                        <div style={{
+                                            fontSize: '1.75rem',
+                                            fontFamily: 'var(--font-mono)',
+                                            fontWeight: 600,
+                                            color: 'var(--color-text-primary)',
+                                            letterSpacing: '-0.5px'
+                                        }}>
                                             {formatCurrency(alloc.amount, currency)}
                                         </div>
-                                        <div style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)' }}>
+                                        <div style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)', lineHeight: 1.4 }}>
                                             {alloc.description}
                                         </div>
                                     </div>
@@ -224,10 +245,14 @@ export default function FinancialCalculator() {
                                 marginTop: 'var(--spacing-lg)',
                                 paddingTop: 'var(--spacing-md)',
                                 borderTop: '1px solid var(--color-border)',
-                                textAlign: 'right'
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center'
                             }}>
-                                <span style={{ color: 'var(--color-text-secondary)', marginRight: 'var(--spacing-sm)' }}>Total:</span>
-                                <span style={{ fontWeight: 700, fontSize: '1.25rem' }}>{formatCurrency(result.totalSalary, currency)}</span>
+                                <span style={{ color: 'var(--color-text-secondary)', fontWeight: 500 }}>Total Calculated Salary:</span>
+                                <span style={{ fontWeight: 700, fontSize: '1.35rem', fontFamily: 'var(--font-mono)' }}>
+                                    {formatCurrency(result.totalSalary, currency)}
+                                </span>
                             </div>
                         </div>
                     )}

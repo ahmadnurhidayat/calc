@@ -1,96 +1,130 @@
 /* ========================================
    GLOBAL STYLES - CALCULATOR APP
-   Blueprint-inspired design theme
+   Apple-inspired light/dark theme system
    ======================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
-
-/* ========================================
-   CSS CUSTOM PROPERTIES (Design Tokens)
-   ======================================== */
+/* Design uses system SF Pro text/display font stacks for macOS with fallback to system UI. */
 
 :root {
-  /* Primary Colors - Blueprint Theme */
-  --color-primary: #2563EB;
-  /* Royal Blue */
-  --color-primary-light: #60A5FA;
-  /* Light Blue */
-  --color-primary-dark: #1E40AF;
-  /* Dark Blue */
-  --color-secondary: #3B82F6;
-  /* Secondary Blue */
+  --color-primary: #0066cc;
+  --color-primary-light: #2078f1;
+  --color-primary-dark: #004a99;
+  --color-primary-on-dark: #2997ff;
 
-  /* Neutral Colors */
-  --color-bg-main: #F8FAFC;
-  /* White/Paper Background */
-  --color-bg-card: #FFFFFF;
-  /* Card Background */
-  --color-bg-elevated: #F1F5F9;
-  /* Elevated Surfaces */
-  --color-text-primary: #0F172A;
-  /* Dark Navy Text */
-  --color-text-secondary: #475569;
-  /* Slate Text */
-  --color-text-muted: #94A3B8;
-  /* Muted Text */
+  --color-ink: #1d1d1f;
+  --color-body: #1d1d1f;
+  --color-body-muted: #cccccc;
+  --color-ink-muted-80: #333333;
+  --color-ink-muted-48: #7a7a7a;
+  --color-divider-soft: #f0f0f0;
+  --color-hairline: #e0e0e0;
+  --color-canvas: #ffffff;
+  --color-canvas-parchment: #f5f5f7;
+  --color-surface-pearl: #fafafc;
+  --color-surface-black: #000000;
+  --color-surface-chip-translucent: rgba(210, 210, 215, 0.35);
 
-  /* Accent Colors */
-  --color-accent: #0EA5E9;
-  /* Cyan Accent */
-  --color-success: #10B981;
-  /* Green */
-  --color-warning: #F59E0B;
-  /* Amber */
-  --color-error: #EF4444;
-  /* Red */
+  --color-bg-main: var(--color-canvas-parchment);
+  --color-bg-surface: var(--color-canvas);
+  --color-bg-elevated: var(--color-surface-pearl);
+  --color-bg-muted: var(--color-canvas-parchment);
+  --color-text-primary: var(--color-ink);
+  --color-text-secondary: var(--color-ink-muted-48);
+  --color-text-muted: var(--color-body-muted);
+  --color-on-dark: #ffffff;
+  --color-on-dark-muted: #d1d5db;
+  --color-accent: var(--color-primary);
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
 
-  /* Border & Shadow */
-  --color-border: #E2E8F0;
-  --color-border-light: #CBD5E1;
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  --shadow-blue: 0 0 20px rgba(37, 99, 235, 0.15);
-  --shadow-blue-intense: 0 0 30px rgba(37, 99, 235, 0.25);
+  --color-border: var(--color-hairline);
+  --color-border-light: rgba(0, 0, 0, 0.03);
+  --color-navbar-bg: var(--color-canvas);
+  --color-navbar-border: var(--color-divider-soft);
 
-  /* Typography */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.08);
+  --shadow-xl: 0 18px 45px rgba(0, 0, 0, 0.1);
+
   --font-mono: 'JetBrains Mono', 'Courier New', monospace;
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-display: 'SF Pro Display', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-sans: 'SF Pro Text', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 
-  /* Spacing */
   --spacing-xs: 0.25rem;
-  /* 4px */
   --spacing-sm: 0.5rem;
-  /* 8px */
   --spacing-md: 1rem;
-  /* 16px */
   --spacing-lg: 1.5rem;
-  /* 24px */
   --spacing-xl: 2rem;
-  /* 32px */
   --spacing-2xl: 3rem;
-  /* 48px */
 
-  /* Border Radius */
-  --radius-sm: 0.375rem;
-  /* 6px */
-  --radius-md: 0.5rem;
-  /* 8px */
-  --radius-lg: 0.75rem;
-  /* 12px */
-  --radius-xl: 1rem;
-  /* 16px */
+  --radius-sm: 5px;
+  --radius-md: 8px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
 
-  /* Transitions */
   --transition-fast: 150ms ease-in-out;
   --transition-base: 250ms ease-in-out;
   --transition-slow: 350ms ease-in-out;
 
-  /* Z-Index */
   --z-base: 1;
   --z-dropdown: 100;
   --z-modal: 1000;
   --z-toast: 2000;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg-main: var(--color-surface-black);
+    --color-bg-surface: #111111;
+    --color-bg-elevated: #1c1c1e;
+    --color-bg-muted: #111111;
+    --color-text-primary: #ffffff;
+    --color-text-secondary: #cbd5e1;
+    --color-text-muted: #94a3b8;
+    --color-border: rgba(255, 255, 255, 0.08);
+    --color-border-light: rgba(255, 255, 255, 0.04);
+    --color-navbar-bg: rgba(0, 0, 0, 0.95);
+    --color-navbar-border: rgba(255, 255, 255, 0.12);
+    --color-primary: #2997ff;
+    --color-primary-light: #60a5fa;
+    --color-primary-dark: #1d4ed8;
+    --color-primary-on-dark: #ffffff;
+  }
+}
+
+html[data-theme='light'] {
+  color-scheme: light;
+  --color-bg-main: var(--color-canvas-parchment);
+  --color-bg-surface: var(--color-canvas);
+  --color-bg-elevated: var(--color-surface-pearl);
+  --color-bg-muted: var(--color-canvas-parchment);
+  --color-text-primary: var(--color-ink);
+  --color-text-secondary: var(--color-ink-muted-48);
+  --color-text-muted: var(--color-body-muted);
+  --color-border: var(--color-hairline);
+  --color-navbar-bg: var(--color-canvas);
+  --color-navbar-border: var(--color-divider-soft);
+  --color-primary: #0066cc;
+  --color-primary-light: #2078f1;
+  --color-primary-dark: #004a99;
+}
+
+html[data-theme='dark'] {
+  color-scheme: dark;
+  --color-bg-main: var(--color-surface-black);
+  --color-bg-surface: #111111;
+  --color-bg-elevated: #1c1c1e;
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #cbd5e1;
+  --color-text-muted: #94a3b8;
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-navbar-bg: rgba(0, 0, 0, 0.95);
+  --color-navbar-border: rgba(255, 255, 255, 0.12);
+  --color-primary: #2997ff;
+  --color-primary-light: #60a5fa;
+  --color-primary-dark: #1d4ed8;
 }
 
 /* ========================================
@@ -114,45 +148,20 @@ body {
   background: var(--color-bg-main);
   color: var(--color-text-primary);
   min-height: 100vh;
-  line-height: 1.6;
+  line-height: 1.47;
   overflow-x: hidden;
-}
-
-/* Blueprint Grid Pattern */
-body::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image:
-    linear-gradient(rgba(37, 99, 235, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(37, 99, 235, 0.05) 1px, transparent 1px);
-  background-size: 20px 20px;
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* Major Grid Lines */
-body::after {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image:
-    linear-gradient(rgba(37, 99, 235, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(37, 99, 235, 0.08) 1px, transparent 1px);
-  background-size: 100px 100px;
-  pointer-events: none;
-  z-index: 0;
 }
 
 #root {
   position: relative;
   z-index: 1;
+}
+
+button,
+select,
+input,
+textarea {
+  font: inherit;
 }
 
 /* ========================================
@@ -171,14 +180,14 @@ h6 {
 }
 
 h1 {
-  font-size: 2.5rem;
-  font-family: var(--font-mono);
-  letter-spacing: -0.02em;
+  font-size: 3rem;
+  font-family: var(--font-display);
+  letter-spacing: -0.28px;
 }
 
 h2 {
-  font-size: 2rem;
-  font-family: var(--font-mono);
+  font-size: 2.25rem;
+  font-family: var(--font-display);
 }
 
 h3 {
@@ -194,9 +203,14 @@ p {
 }
 
 a {
-  color: var(--color-primary-light);
+  color: var(--color-primary);
   text-decoration: none;
   transition: color var(--transition-fast);
+}
+
+a:hover,
+a:focus-visible {
+  color: var(--color-primary-dark);
 }
 
 a:hover {
@@ -215,26 +229,24 @@ a:hover {
 }
 
 .glass-card {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.92);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg);
 }
 
 .glass-card-intense {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(20px);
-  border: 1px solid var(--color-border-light);
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-blue);
 }
 
 .text-gradient {
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--color-primary);
+  font-weight: 700;
+  background: none;
+  -webkit-background-clip: unset;
+  -webkit-text-fill-color: unset;
+  background-clip: unset;
 }
 
 /* ========================================

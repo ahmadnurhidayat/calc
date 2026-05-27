@@ -24,6 +24,15 @@ export default function ScientificCalculator() {
     const [angleMode, setAngleMode] = useState<AngleMode>('deg');
     const [secondFunction, setSecondFunction] = useState(false);
 
+    // Reset listener from global dual-nav
+    useEffect(() => {
+        const handleReset = () => {
+            setState(handleClear());
+        };
+        window.addEventListener('calc-reset', handleReset);
+        return () => window.removeEventListener('calc-reset', handleReset);
+    }, []);
+
     const onNumberClick = (num: string) => {
         setState((prev) => handleNumber(prev, num));
     };

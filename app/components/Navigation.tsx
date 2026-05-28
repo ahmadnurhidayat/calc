@@ -2,6 +2,7 @@
 import { Link, useLocation } from 'react-router';
 import { useState } from 'react';
 import { useTheme } from '~/theme';
+import '~/styles/calculator.css';
 
 export default function Navigation() {
   const location = useLocation();

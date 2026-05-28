@@ -378,6 +378,13 @@
     transition: background var(--transition-base), border-color var(--transition-base);
 }
 
+@media (prefers-color-scheme: dark) {
+    .sub-nav-frosted {
+        background: rgba(0, 0, 0, 0.82);
+        border-bottom-color: rgba(255, 255, 255, 0.08);
+    }
+}
+
 html[data-theme='dark'] .sub-nav-frosted {
     background: rgba(0, 0, 0, 0.82);
     border-bottom-color: rgba(255, 255, 255, 0.08);

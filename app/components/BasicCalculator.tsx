@@ -21,6 +21,15 @@ import '~/styles/calculator.css';
 export default function BasicCalculator() {
     const [state, setState] = useState<CalculatorState>(initialState);
 
+    // Reset listener from global dual-nav
+    useEffect(() => {
+        const handleReset = () => {
+            setState(handleClear());
+        };
+        window.addEventListener('calc-reset', handleReset);
+        return () => window.removeEventListener('calc-reset', handleReset);
+    }, []);
+
     // Keyboard support
     useEffect(() => {
         const handleKeyPress = (e: KeyboardEvent) => {

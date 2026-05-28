@@ -9,6 +9,7 @@ import {
 
 import type { Route } from "./+types/root";
 import Navigation from "~/components/Navigation";
+import { ThemeProvider } from "~/theme";
 import "~/styles/global.css";
 
 export const links: Route.LinksFunction = () => [
@@ -42,10 +43,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   return (
-    <>
+    <ThemeProvider>
       <Navigation />
       <Outlet />
-    </>
+    </ThemeProvider>
   );
 }
 

@@ -103,40 +103,51 @@ export default function Home() {
 
         .hero-section {
           text-align: center;
-          padding: var(--spacing-2xl) 0;
+          padding: var(--spacing-xl) 0;
           margin-bottom: var(--spacing-2xl);
-          max-width: 800px;
+          max-width: 760px;
           margin-left: auto;
           margin-right: auto;
         }
 
         .hero-title {
-          font-size: 4rem;
-          font-family: var(--font-sans);
-          font-weight: 700;
+          font-size: 56px;
+          font-family: var(--font-display);
+          font-weight: 600;
           margin-bottom: var(--spacing-md);
-          letter-spacing: -0.02em;
-          line-height: 1.1;
+          letter-spacing: -0.28px;
+          line-height: 1.07;
           color: var(--color-text-primary);
+          max-width: 11ch;
+          margin-left: auto;
+          margin-right: auto;
         }
 
         .hero-subtitle {
-          font-size: 1.5rem;
-          color: var(--color-text-secondary);
-          margin-bottom: var(--spacing-sm);
+          font-size: 1.125rem;
+          color: var(--color-ink-muted-48);
+          margin-bottom: var(--spacing-lg);
           font-weight: 400;
           line-height: 1.5;
+          max-width: 40rem;
+          margin-left: auto;
+          margin-right: auto;
         }
 
         .hero-cta {
           font-family: var(--font-sans);
-          font-size: 1.25rem;
+          font-size: 1rem;
           font-weight: 600;
           color: var(--color-primary);
           text-decoration: none;
           display: inline-block;
           position: relative;
-          padding-bottom: 8px;
+          padding-bottom: 6px;
+          border-bottom: 1px solid transparent;
+        }
+
+        .hero-cta:hover {
+          border-color: var(--color-primary);
         }
 
         .squiggly-hero {
@@ -157,23 +168,24 @@ export default function Home() {
         }
 
         .calc-card {
-          padding: var(--spacing-xl);
-          background: #FFFFFF;
-          border: 1px solid var(--color-border);
-          border-radius: var(--radius-lg);
-          transition: all var(--transition-base);
-          cursor: pointer;
-          text-decoration: none;
-          display: flex;
-          flex-direction: column;
-          position: relative;
-          box-shadow: var(--shadow-sm);
+}
+
+/* Dark mode overrides */
+.dark .calc-card {
+  background: var(--color-bg-surface);
+  border-color: var(--color-border);
+}
+
+.dark .calc-card:hover {
+  background: var(--color-bg-elevated);
+  border-color: var(--color-primary);
+}
+/* removed duplicate calc-card styles */
         }
 
         .calc-card:hover {
-          transform: translateY(-5px);
-          box-shadow: var(--shadow-xl);
-          border-color: var(--color-primary-light);
+          border-color: var(--color-primary);
+          background: var(--color-surface-pearl);
         }
 
         .card-icon {
@@ -183,16 +195,21 @@ export default function Home() {
 
         .card-title {
           font-size: 1.25rem;
-          font-family: var(--font-sans);
+          font-family: var(--font-display);
           font-weight: 600;
           color: var(--color-text-primary);
           margin-bottom: var(--spacing-sm);
         }
 
+        /* Dark mode title color */
+        .dark .card-title {
+          color: var(--color-text-primary);
+        }
+
         .card-description {
-          color: var(--color-text-secondary);
+          color: var(--color-ink-muted-48);
           margin-bottom: var(--spacing-lg);
-          line-height: 1.6;
+          line-height: 1.65;
           font-size: 0.95rem;
           flex-grow: 1;
         }
@@ -205,13 +222,13 @@ export default function Home() {
         }
 
         .calc-card:hover .card-arrow {
-          transform: translateX(5px);
+          transform: translateX(4px);
         }
 
         .home-footer {
           margin-top: var(--spacing-2xl);
           padding-top: var(--spacing-xl);
-          border-top: 1px solid var(--color-border);
+          border-top: 1px solid var(--color-divider-soft);
         }
 
         .footer-content {
@@ -223,7 +240,7 @@ export default function Home() {
         }
 
         .footer-brand .brand-text {
-          font-family: var(--font-sans);
+          font-family: var(--font-display);
           font-weight: 600;
           font-size: 1.25rem;
           color: var(--color-text-primary);
@@ -235,14 +252,14 @@ export default function Home() {
         }
 
         .footer-links a {
-          color: var(--color-text-secondary);
+          color: var(--color-ink-muted-48);
           text-decoration: none;
           font-size: 0.95rem;
           transition: color 0.2s;
         }
 
         .footer-links a:hover {
-          color: var(--color-primary);
+          color: var(--color-text-primary);
         }
 
         .footer-copyright {
@@ -252,11 +269,11 @@ export default function Home() {
 
         @media (max-width: 768px) {
           .hero-title {
-            font-size: 2.5rem;
+            font-size: 2.75rem;
           }
 
           .hero-subtitle {
-            font-size: 1.125rem;
+            font-size: 1rem;
           }
 
           .cards-section {
